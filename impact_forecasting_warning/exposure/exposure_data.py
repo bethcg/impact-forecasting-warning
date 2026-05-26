@@ -16,8 +16,8 @@ from climada import CONFIG
 from climada.entity import LitPop
 
 # Define data paths
-PATH_TO_WARNINGREGION_SHAPES = f"{CONFIG.local_data.data_dir}/warning_regions/Warningregions.shp"
-PATH_TO_CANTON_SHAPES = f"{CONFIG.local_data.data_dir}/ch_shapefile/swissTLMRegio_KANTONSGEBIET_LV95.shp"
+PATH_TO_WARNINGREGION_SHAPES = "/home/muh/data/aux_data/MCH_Warnreg/MeteoSchweiz_Warnreg_2_3.shp"
+PATH_TO_CANTON_SHAPES = "/home/muh/data/aux_data/Cantonal_borders/K4kant20220101gf_ch2007Poly.shp"
 
 
 def create_litpop_exposure(convert_to_chf: bool = True) -> LitPop:
