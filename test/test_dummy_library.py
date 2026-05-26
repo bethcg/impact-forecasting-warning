@@ -4,18 +4,17 @@ Copyright (c) 2025 MeteoSwiss, contributors listed in AUTHORS
 Distributed under the terms of the BSD 3-Clause License.
 
 SPDX-License-Identifier: BSD-3-Clause
+
+Template test file - update with actual tests for impact_forecasting_warning modules.
 """
 
-from open_source_template.main import another_dummy_func, dummy_func
+# TODO: Add tests for impact_forecasting_warning modules
+# Example test structure:
+# from impact_forecasting_warning.hazard import fetch_ogd_forecast
+# from impact_forecasting_warning.exposure import create_litpop_exposure
+# etc.
 
 
-def test_dummy_func():
-    """Test the correctness of dummy_func."""
-
-    assert dummy_func(3.2) == 3
-
-
-def test_another_dummy_func():
-    """Test the correctness of another_dummy_func."""
-
-    assert another_dummy_func(5) == 5.0
+def test_placeholder():
+    """Placeholder test - replace with actual tests."""
+    assert True
