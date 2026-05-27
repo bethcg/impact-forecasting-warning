@@ -20,15 +20,31 @@
 Getting Started
 ===============
 
-A demo for the OSS template at MeteoSwiss.
+Setup
+-----
 
-The template can be use as an example how to configure MeteoSwiss Github projects.
+**Clone the repository:**
 
-It uses:
+.. code-block:: console
 
-* Github actions to execute the CI/CD pipelines
-* Github pages to host the documentation
-* PyPI to publish the python packages
+    $ git clone https://github.com/MeteoSwiss/impact-forecasting-warning.git
+    $ cd impact-forecasting-warning
+
+**Install dependencies with Poetry:**
+
+.. code-block:: console
+
+    $ poetry install
+
+This will install all runtime and development dependencies in a virtual environment.
+
+**Activate the environment:**
+
+.. code-block:: console
+
+    $ poetry shell
+
+You can now run tests with ``pytest``, check code quality with ``pylint`` and ``mypy``, or execute the pipeline modules.
 
 Project Structure
 -----------------
@@ -39,17 +55,17 @@ The project is organized into the following modules:
 
     impact_forecasting_warning/
     ├── exposure/
-    │   ├── exposure_creation.py    # Create LitPop and elevation-based exposures
+    │   ├── exposure_creation.py     # Create CLIMADA Exposures from geodata
     │   └── exposure_data.py         # Load Swiss geodata (cantons, warning regions)
     ├── hazard/
     │   ├── weather_api.py           # Fetch weather forecasts from OGD API
     │   └── hazard_forecast.py       # Convert forecasts to CLIMADA HazardForecast
     ├── vulnerability/
-    │   └── wind.py                  # Wind impact functions (Schwierz, Welker, warnings)
+    │   └── wind.py                  # CLIMADA impact functions definitions (wind only for now)
     ├── pipelines/
-    │   └── wind_impact_forecast.py  # Main orchestration and pipeline execution
+    │   └── wind_impact_forecast.py  # Main orchestration and pipeline execution (1 for now)
     └── visualization/
-        ├── plots.py                 # 6 plot creation functions
+        ├── plots.py                 # Plot creation functions
         └── util_functions.py        # Aggregation and plotting utilities
 
 **Module Responsibilities:**
