@@ -86,7 +86,8 @@ def run_pipeline(n_days: int = 5) -> None:
     4. Compute hazard-based warnings
     5. Generate visualizations for each forecast day
     
-    Output files are saved to the directory specified in CLIMADA config.
+    Output files are saved to ``results/plots`` (visualizations) and
+    ``results/output_data`` (CSV exports).
 
     :param n_days: Number of forecast days to process.
     :type n_days: int
