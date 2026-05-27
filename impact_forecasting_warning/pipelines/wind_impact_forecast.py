@@ -13,7 +13,7 @@ from pathlib import Path
 
 import numpy as np
 
-from climada.engine import ImpactCalc
+from climada.engine import Impact, ImpactCalc
 from climada.entity import ImpactFuncSet
 from climada.hazard.forecast import HazardForecast  # pylint: disable=import-error  # TODO: Fix climada.hazard.forecast import
 
@@ -54,7 +54,7 @@ def wind_dmg_fc_to_buildings(haz_fc: HazardForecast) -> tuple:
     return exp_ch, imp_fc
 
 
-def wind_hazard_based_warning(haz_fc: HazardForecast) -> tuple:
+def wind_hazard_based_warning(haz_fc: HazardForecast) -> Impact:
     """
     Compute hazard-based warnings using elevation-dependent thresholds.
 

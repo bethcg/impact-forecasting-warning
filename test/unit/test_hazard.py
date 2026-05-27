@@ -31,8 +31,8 @@ class TestWeatherAPI:
 class TestHazardForecast:
     """Tests for hazard forecast creation functions."""
 
-    def test_create_hazard_forecast_returns_six_tuple(self, mock_xarray_forecast: xr.DataArray) -> None:
-        """Test create_hazard_forecast returns 6-tuple."""
+    def test_create_hazard_forecast_returns_seven_tuple(self, mock_xarray_forecast: xr.DataArray) -> None:
+        """Test create_hazard_forecast returns 7-tuple (haz_fc, reference_time, ref_time_str, valid_time_strs, valid_time_prints, base_strs, base_strs_output_data)."""
         # TODO: Implement test
         pass
 
