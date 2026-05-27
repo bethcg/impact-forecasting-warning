@@ -7,13 +7,11 @@ Created on Tue Apr 2026
 
 import geopandas as gpd
 import matplotlib as mpl
-import matplotlib.ticker as ticker
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib import ticker
 from scipy import stats
 from shapely.affinity import translate
-import srtm
-import xarray as xr
 
 
 def print_large_amounts(x):
@@ -180,7 +178,7 @@ def plot_impact_log_hist(
     } | (kwargs_hist or {})
     xlims = (bins[0], bins[-1])
 
-    counts, _, rectangles = ax.hist(
+    _, _, rectangles = ax.hist(
         impact_clipped,
         bins=bins,
         edgecolor="black",
@@ -366,7 +364,7 @@ def plot_member_piechart_per_region(
 
     if exposure_for_normalization is not None:
         agg_exp = aggregate_exposures_by_gdf(exposure_for_normalization, gdf_regions)
-        if (gdf_impact_agg[list(impact_forecast.event_id)].shape[0] != agg_exp["value"].shape[0]):
+        if gdf_impact_agg[list(impact_forecast.event_id)].shape[0] != agg_exp["value"].shape[0]:
             raise ValueError(f"Number of columns of aggregated impact matrix "
                              f"(shape {gdf_impact_agg[list(impact_forecast.event_id)].shape})"
                              f"does not correspond to number of columns of aggregated exposure "
@@ -379,7 +377,7 @@ def plot_member_piechart_per_region(
         bins = np.linspace(0, max_values, 5)
     pie_width = pie_rel_size * min(bbox[1] - bbox[0], bbox[3] - bbox[2])
 
-    for idx, row in gdf_impact_agg.iterrows():
+    for _, row in gdf_impact_agg.iterrows():
         x_loc, y_loc = row["centerofmass"].x, row["centerofmass"].y
         inset_ax = ax.inset_axes(
             [x_loc - pie_width / 2, y_loc - pie_width / 2, pie_width, pie_width],
@@ -455,7 +453,7 @@ def plot_impact_polygons(impact,
 
     if exposure_for_normalization is not None:
         agg_exp = aggregate_exposures_by_gdf(exposure_for_normalization, gdf_regions)
-        if (gdf_impact[list(impact.event_id)].shape[0] != agg_exp["value"].shape[0]):
+        if gdf_impact[list(impact.event_id)].shape[0] != agg_exp["value"].shape[0]:
             raise ValueError(f"Number of columns of aggregated impact matrix "
                              f"(shape {gdf_impact[list(impact.event_id)].shape})"
                              f"does not correspond to number of columns of aggregated exposure "
@@ -561,7 +559,6 @@ def plot_impact_with_region_shapes(
         ax = gdf_regions.geometry.plot(facecolor="white", edgecolor="black", figsize=kwargs.get("figsize", (10, 6)))
     else:
         gdf_regions.geometry.to_crs(current_crs).plot(ax=ax, facecolor="white", edgecolor="black")
-    bbox = (*ax.get_xlim(), *ax.get_ylim())
 
     imp = np.asarray(impact.imp_mat.todense()).ravel()
     x = impact.coord_exp[:, 1]

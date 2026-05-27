@@ -9,8 +9,9 @@ Wind impact forecast pipeline: Orchestration and CLI entry point.
 """
 
 import argparse
-import numpy as np
 from pathlib import Path
+
+import numpy as np
 
 from climada.engine import ImpactCalc
 from climada.entity import ImpactFuncSet
@@ -99,7 +100,7 @@ def run_pipeline(n_days: int = 5) -> None:
                                      n_days=n_days)
 
     # Step 2: Create HazardForecast object
-    haz_fc, reference_time, ref_time_str, valid_time_strs, valid_time_prints, base_strs, base_strs_output_data = (
+    haz_fc, reference_time, _, valid_time_strs, valid_time_prints, base_strs, base_strs_output_data = (
         create_hazard_forecast(da_forecast, hazard_type="WS", intensity_unit="m/s", variable_name="VMAX_10M"))
 
     # Step 3: Compute building impacts
@@ -121,7 +122,6 @@ def run_pipeline(n_days: int = 5) -> None:
     for i in range(n_days):
         forecast_day = i
         impact = imp_fc.select(lead_time=np.unique(imp_fc.lead_time)[i])
-        valid_time_str = valid_time_strs[i]
         valid_time_print = valid_time_prints[i]
         base_str = base_strs[i]
         base_str_output_data = base_strs_output_data[i]
