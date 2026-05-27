@@ -1,22 +1,9 @@
-.. image:: https://img.shields.io/pypi/v/Open-Source-Template.svg
-    :target: https://pypi.org/project/Open-Source-Template/
+===========================
+Impact Forecasting & Warning
+===========================
 
-.. image:: https://img.shields.io/pypi/pyversions/Open-Source-Template.svg
-    :target: https://pypi.org/project/Open-Source-Template/
+A system for forecasting and visualizing weather impact warnings for Switzerland using CLIMADA.
 
-.. image:: https://img.shields.io/pypi/l/Open-Source-Template.svg
-    :target: https://pypi.org/project/Open-Source-Template/
-
-.. image:: https://github.com/MeteoSwiss/Open-Source-Template/actions/workflows/github-code-scanning/codeql/badge.svg
-    :target: https://github.com/MeteoSwiss/Open-Source-Template/actions/workflows/github-code-scanning/codeql
-
-.. image:: https://github.com/MeteoSwiss/Open-Source-Template/actions/workflows/CI_test.yaml/badge.svg
-    :target: https://github.com/MeteoSwiss/Open-Source-Template/actions/workflows/CI_test.yaml
-
-.. image:: https://github.com/MeteoSwiss/Open-Source-Template/actions/workflows/CI_publish_dev_documentation.yaml/badge.svg
-    :target: https://github.com/MeteoSwiss/Open-Source-Template/actions/workflows/CI_publish_dev_documentation.yaml
-
-===============
 Getting Started
 ===============
 
@@ -44,10 +31,39 @@ This will install all runtime and development dependencies in a virtual environm
 
     $ poetry shell
 
-You can now run tests with ``pytest``, check code quality with ``pylint`` and ``mypy``, or execute the pipeline modules.
+Run Tests
+---------
+
+.. code-block:: console
+
+    $ poetry run pytest
+
+Run Quality Tools
+-----------------
+
+.. code-block:: console
+
+    $ poetry run pylint impact_forecasting_warning
+    $ poetry run mypy impact_forecasting_warning
+
+Generate Documentation
+----------------------
+
+.. code-block:: console
+
+    $ poetry run sphinx-build doc doc/_build
+
+Then open the index.html file generated in *doc/_build/*.
+
+Build Wheels
+------------
+
+.. code-block:: console
+
+    $ poetry build
 
 Project Structure
------------------
+===============
 
 The project is organized into the following modules:
 
@@ -122,62 +138,8 @@ Pipeline outputs are organized into separate directories:
 * **plots/**: All visualizations (histograms, maps, charts) in JPEG and SVG formats
 * **output_data/**: Quantitative results exported as CSV files for further analysis
 
-Development Setup with Poetry
------------------------------
-
-Building the Project
-''''''''''''''''''''
-.. code-block:: console
-
-    $ cd open-source-template
-    $ poetry install
-
-Run Tests
-'''''''''
-
-.. code-block:: console
-
-    $ poetry run pytest
-
-Run Quality Tools
-'''''''''''''''''
-
-.. code-block:: console
-
-    $ poetry run pylint open_source_template
-    $ poetry run mypy open_source_template
-
-Generate Documentation
-''''''''''''''''''''''
-
-.. code-block:: console
-
-    $ poetry run sphinx-build doc doc/_build
-
-Then open the index.html file generated in *open-source-template/doc/_build/*.
-
-Build wheels
-''''''''''''
-
-.. code-block:: console
-
-    $ poetry build
-
-Using the Library
------------------
-
-To install open-source-template in your project, run this command in your terminal:
-
-.. code-block:: console
-
-    $ poetry add open-source-template
-
-You can then use the library in your project through
-
-    import open_source_template
-
 Releasing
----------
+===============
 
 * Adapt CHANGELOG.rst with release information
 * Adapt ``doc/_static/switcher_config.json`` adding the new documentation URL for the release
