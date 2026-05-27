@@ -1,11 +1,12 @@
 [tool.poetry]
-name = "open-source-template"
+name = "impact-forecasting-warning"
 version = "0.0.0"  # DO NOT SET. The version of the package is always set by the CI/CD pipeline.
-description = "A demo for the OSS template at MeteoSwiss."
+description = "A system for forecasting and visualizing weather impact warnings for Switzerland using CLIMADA."
 license = "BSD-3-Clause"
 authors = ["Michele Cattaneo <michele.cattaneo@meteoswiss.ch>"]
 readme = "README.rst"
 include = ["CHANGELOG.rst"]
+packages = [{ include = "impact_forecasting_warning" }]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
