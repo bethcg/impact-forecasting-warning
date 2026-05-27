@@ -63,7 +63,7 @@ Build Wheels
     $ poetry build
 
 Project Structure
-===============
+=================
 
 The project is organized into the following modules:
 
