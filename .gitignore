@@ -109,3 +109,6 @@ ENV/
 
 # Output results
 results/
+
+# Claude AI
+.claude/
