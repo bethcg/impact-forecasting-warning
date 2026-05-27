@@ -11,13 +11,15 @@ Exposure data loading: LitPop creation, geodata, and elevation data.
 import cartopy.crs as ccrs
 import geopandas as gpd
 import numpy as np
+from pathlib import Path
 
 from climada import CONFIG
 from climada.entity import LitPop
 
-# Define data paths
-PATH_TO_WARNINGREGION_SHAPES = "/home/muh/data/aux_data/MCH_Warnreg/MeteoSchweiz_Warnreg_2_3.shp"
-PATH_TO_CANTON_SHAPES = "/home/muh/data/aux_data/Cantonal_borders/K4kant20220101gf_ch2007Poly.shp"
+# Define data paths (relative to this module)
+_DATA_DIR = Path(__file__).parent / "static_data" / "shapefiles"
+PATH_TO_WARNINGREGION_SHAPES = str(_DATA_DIR / "warning_regions" / "MeteoSchweiz_Warnreg_2_3.shp")
+PATH_TO_CANTON_SHAPES = str(_DATA_DIR / "cantons" / "K4kant20220101gf_ch2007Poly.shp")
 
 
 def create_litpop_exposure(convert_to_chf: bool = True) -> LitPop:
@@ -49,16 +51,15 @@ def load_geodataframes() -> tuple:
     # Prepare warning region shapes
     gdf_warningregions = gpd.read_file(PATH_TO_WARNINGREGION_SHAPES)
     gdf_warningregions.crs = ccrs.epsg(21781)
-    gdf_warningregions = gdf_warningregions.dissolve(by="REGION_NAM", as_index=False)
-    gdf_warningregions = gdf_warningregions[["REGION_NAM", "geometry"]]
+    gdf_warningregions = gdf_warningregions.dissolve(by="REGION_Nam", as_index=False)
+    gdf_warningregions = gdf_warningregions[["REGION_Nam", "geometry"]]
     gdf_warningregions = gdf_warningregions.to_crs(epsg=4326)
 
     # Prepare canton shapes
     gdf_cantons = gpd.read_file(PATH_TO_CANTON_SHAPES)
     gdf_cantons = gdf_cantons.to_crs(epsg=4326)
-    gdf_cantons = gdf_cantons.dissolve(by="NAME", as_index=False)
-    gdf_cantons = gdf_cantons.loc[gdf_cantons.ICC == "CH", :].reset_index(drop=True)
-    gdf_cantons = gdf_cantons[["NAME", "geometry"]]
+    gdf_cantons = gdf_cantons.dissolve(by="name", as_index=False)
+    gdf_cantons = gdf_cantons[["name", "geometry"]]
 
     # Dictionary for shifting canton labels on maps
     shift_center_of_mass_by_name = {

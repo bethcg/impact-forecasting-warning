@@ -30,6 +30,59 @@ It uses:
 * Github pages to host the documentation
 * PyPI to publish the python packages
 
+Project Structure
+-----------------
+
+The project is organized into the following modules:
+
+.. code-block:: text
+
+    impact_forecasting_warning/
+    ├── exposure/
+    │   ├── exposure_creation.py    # Create LitPop and elevation-based exposures
+    │   └── exposure_data.py         # Load Swiss geodata (cantons, warning regions)
+    ├── hazard/
+    │   ├── weather_api.py           # Fetch weather forecasts from OGD API
+    │   └── hazard_forecast.py       # Convert forecasts to CLIMADA HazardForecast
+    ├── vulnerability/
+    │   └── wind.py                  # Wind impact functions (Schwierz, Welker, warnings)
+    ├── pipelines/
+    │   └── wind_impact_forecast.py  # Main orchestration and pipeline execution
+    └── visualization/
+        ├── plots.py                 # 6 plot creation functions
+        └── util_functions.py        # Aggregation and plotting utilities
+
+**Module Responsibilities:**
+
+* **exposure**: Geographic data handling and exposure creation for Switzerland
+* **hazard**: Weather forecast fetching and conversion to CLIMADA objects
+* **vulnerability**: Impact functions defining damage curves and warning levels
+* **pipelines**: Orchestration layer connecting all modules, main entry point
+* **visualization**: Plot generation and spatial aggregation utilities
+
+Test Structure
+--------------
+
+Tests are organized into unit and integration tests:
+
+.. code-block:: text
+
+    test/
+    ├── conftest.py                      # Shared pytest fixtures
+    ├── unit/                            # Unit tests for individual modules
+    │   ├── test_exposure.py             # Tests for exposure module
+    │   ├── test_hazard.py               # Tests for hazard module
+    │   └── test_vulnerability.py        # Tests for vulnerability module
+    └── integration/                     # Integration tests
+        ├── test_pipelines.py            # Pipeline orchestration tests
+        └── test_visualization.py        # Visualization output tests
+
+**Test Organization:**
+
+* **Unit tests**: Test individual functions and classes in isolation with mocked dependencies
+* **Integration tests**: Test complete workflows and inter-module interactions
+* **Shared fixtures**: Common test data and mocks in ``conftest.py`` (HazardForecast, Exposures, GeoDataFrames, etc.)
+
 Development Setup with Poetry
 -----------------------------
 

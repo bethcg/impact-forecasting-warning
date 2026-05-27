@@ -108,7 +108,7 @@ def create_cantonal_plot(impact: Impact, exp_ch: Exposures, gdf_cantons: gpd.Geo
     impact_per_canton[median_col_name] = np.median(impact_per_canton[range(1 + 21 * forecast_day,
                                                                            22 + 21 * forecast_day)],
                                                    axis=1)
-    impact_per_canton.rename(columns={"NAME": "canton"})[[
+    impact_per_canton.rename(columns={"name": "canton"})[[
         "canton", median_col_name
     ]].set_index("canton").to_csv(f"{base_str_output_data}_canton_medians.csv")
 

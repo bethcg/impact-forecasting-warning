@@ -10,6 +10,7 @@ Wind impact forecast pipeline: Orchestration and CLI entry point.
 
 import argparse
 import numpy as np
+from pathlib import Path
 
 from climada.engine import ImpactCalc
 from climada.entity import ImpactFuncSet
@@ -109,6 +110,12 @@ def run_pipeline(n_days: int = 5) -> None:
 
     # Step 5: Load geodata for visualization
     gdf_warningregions, gdf_cantons, shift_center_of_mass_by_name = load_geodataframes()
+
+    # Create output directories
+    for base_str in base_strs:
+        Path(base_str).parent.mkdir(parents=True, exist_ok=True)
+    for base_str in base_strs_output_data:
+        Path(base_str).parent.mkdir(parents=True, exist_ok=True)
 
     # Step 6: Iterate over forecast days and create visualizations
     for i in range(n_days):

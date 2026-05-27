@@ -15,13 +15,11 @@ from shapely.affinity import translate
 import srtm
 import xarray as xr
 
+
 def print_large_amounts(x):
-    return (
-        f'{x/1e9:.1f}B' if x>=1e9 else
-        f'{x/1e6:.0f}M' if x>=1e6 else
-        f'{x/1e3:.0f}k' if x>=1e3 else
-        f'{x:.0f}'
-    )
+    return (f'{x/1e9:.1f}B'
+            if x >= 1e9 else f'{x/1e6:.0f}M' if x >= 1e6 else f'{x/1e3:.0f}k' if x >= 1e3 else f'{x:.0f}')
+
 
 def aggregate_impacts_by_gdf(
     impact,
@@ -52,15 +50,11 @@ def aggregate_impacts_by_gdf(
     gdf_impact = gpd.GeoDataFrame(
         impact.imp_mat.T.todense(),
         columns=impact.event_id,
-        geometry=gpd.points_from_xy(
-            impact.coord_exp[:, 1], impact.coord_exp[:, 0], crs=impact.crs
-        ),
+        geometry=gpd.points_from_xy(impact.coord_exp[:, 1], impact.coord_exp[:, 0], crs=impact.crs),
     )
 
     joined_gdf = gpd.sjoin(gdf, gdf_impact, how="inner", predicate="intersects")
-    gdf_result[impact.event_id] = joined_gdf.groupby(level=0)[[*impact.event_id]].agg(
-        agg_func
-    )
+    gdf_result[impact.event_id] = joined_gdf.groupby(level=0)[[*impact.event_id]].agg(agg_func)
 
     return gdf_result
 
@@ -91,11 +85,10 @@ def aggregate_exposures_by_gdf(
         A copy of the input GDF with an added 'value' column for aggregated exposures.
     """
     gdf_result = gdf.copy()
-    joined_gdf = gpd.sjoin(
-        gdf, exposure.gdf[["geometry", "value"]], how="inner", predicate="intersects"
-    )
+    joined_gdf = gpd.sjoin(gdf, exposure.gdf[["geometry", "value"]], how="inner", predicate="intersects")
     gdf_result["value"] = joined_gdf.groupby(level=0)[["value"]].agg(agg_func)
     return gdf_result
+
 
 def plot_impact_log_hist(
     imp_fc,
@@ -163,21 +156,15 @@ def plot_impact_log_hist(
 
     if fit_gaussian_kernel_for_logs:
         imp_log = np.log10(impact_clipped)
-        kernel = (
-            stats.gaussian_kde(imp_log)
-            if any(imp_log > bins_log[0] + 1e-4)
-            else stats.gaussian_kde([0] * 10 + [1e-3])
-        )  # compute quantiles
+        kernel = (stats.gaussian_kde(imp_log) if any(imp_log > bins_log[0] + 1e-4) else stats.gaussian_kde([0] * 10 +
+                                                                                                           [1e-3])
+                  )  # compute quantiles
     # compute quantiles
     if ci_quantiles is None:
         ci_quantiles = np.array([[0.05, 0.95], [0.25, 0.75]])
     imp_quantiles = np.array([np.quantile(impact_clipped, q) for q in ci_quantiles])
 
-    fig, ax = (
-        plt.subplots(1, 1, figsize=kwargs.get("figsize", (10, 6)))
-        if ax is None
-        else (ax.get_figure(), ax)
-    )
+    fig, ax = (plt.subplots(1, 1, figsize=kwargs.get("figsize", (10, 6))) if ax is None else (ax.get_figure(), ax))
     ax_pos = [0, 0.2, 1.1, 0.8]
     ax.set_position(ax_pos)
     ax.set_xscale("log")
@@ -197,7 +184,10 @@ def plot_impact_log_hist(
         impact_clipped,
         bins=bins,
         edgecolor="black",
-        **{k: v for k, v in kwargs_hist.items() if k not in ["rescale_height"]},
+        **{
+            k: v
+            for k, v in kwargs_hist.items() if k not in ["rescale_height"]
+        },
     )
     for r in rectangles:
         r.set_height(r.get_height() * kwargs_hist["rescale_height"])
@@ -205,9 +195,7 @@ def plot_impact_log_hist(
     # plot fits
     if fit_gaussian_kernel_for_logs:
         outline = mpl.patheffects.withStroke(linewidth=6, foreground="black")
-        normalization = (
-            len(impact_clipped) * (bins_log[-1] - bins_log[0]) / (len(bins) - 1)
-        )
+        normalization = (len(impact_clipped) * (bins_log[-1] - bins_log[0]) / (len(bins) - 1))
         ax.plot(
             np.geomspace(bins[0], bins[-1], 1000),
             normalization * kernel(np.linspace(bins_log[0], bins_log[-1], 1000)),
@@ -243,8 +231,7 @@ def plot_impact_log_hist(
                 imp_quantiles[i, 1] - imp_quantiles[i, 0],
                 1.0,
                 facecolor=kwargs_cis["colors"][i],
-            )
-        )
+            ))
         ax_intervals.annotate(
             f"({p_min}-{p_max}) confidence interval",
             (0.95 * xlims[1], anchors[i] + 0.5),
@@ -270,9 +257,7 @@ def plot_impact_log_hist(
     if xticklabels:
         ax_intervals.set_xticklabels(xticklabels)
     else:
-        ax_intervals.xaxis.set_major_formatter(
-        ticker.FuncFormatter(lambda x, _: print_large_amounts(x))
-)
+        ax_intervals.xaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: print_large_amounts(x)))
 
     impact_label = impact_label or f"Impact ({imp_fc.unit})"
     ax_intervals.set_xlabel(impact_label)
@@ -282,15 +267,14 @@ def plot_impact_log_hist(
         patch = mpl.patches.Patch(color=kwargs_hist["color"], label=legend_label)
         legend = ax.get_legend()
         if legend:
-            handles, labels = legend.legend_handles, [
-                t.get_text() for t in legend.get_texts()
-            ]
+            handles, labels = legend.legend_handles, [t.get_text() for t in legend.get_texts()]
             ax.legend(handles + [patch], labels + [legend_label])
         else:
             ax.legend([patch], [legend_label], loc="upper right")
 
     ax.set_title(title)
     return ax
+
 
 def plot_member_piechart_per_region(
     impact_forecast,
@@ -355,7 +339,11 @@ def plot_member_piechart_per_region(
         kwargs_pie = {}
     kwargs_pie = {
         "startangle": 90,
-        "wedgeprops": {"linewidth": 0.3, "edgecolor": "black", "alpha": 1.0},
+        "wedgeprops": {
+            "linewidth": 0.3,
+            "edgecolor": "black",
+            "alpha": 1.0
+        },
     } | kwargs_pie
     if ax is not None and hasattr(ax, "projection"):
         current_crs = ax.projection
@@ -363,42 +351,28 @@ def plot_member_piechart_per_region(
         current_crs = gdf_regions.crs
 
     if ax is None:
-        ax = gdf_regions.geometry.plot(
-            facecolor="white", edgecolor="black", figsize=kwargs.get("figsize", (10, 6))
-        )
+        ax = gdf_regions.geometry.plot(facecolor="white", edgecolor="black", figsize=kwargs.get("figsize", (10, 6)))
     else:
-        gdf_regions.geometry.to_crs(current_crs).plot(
-            ax=ax, facecolor="white", edgecolor="black"
-        )
+        gdf_regions.geometry.to_crs(current_crs).plot(ax=ax, facecolor="white", edgecolor="black")
     bbox = (*ax.get_xlim(), *ax.get_ylim())
 
     gdf_impact_agg = aggregate_impacts_by_gdf(impact_forecast, gdf_regions, agg_func)
-    gdf_impact_agg["centerofmass"] = gdf_impact_agg.geometry.to_crs(
-        current_crs
-    ).centroid
+    gdf_impact_agg["centerofmass"] = gdf_impact_agg.geometry.to_crs(current_crs).centroid
     if shift_center_of_mass_by_name is not None:
         for name, shift in shift_center_of_mass_by_name.items():
-            gdf_impact_agg.loc[gdf_impact_agg["NAME"] == name, "centerofmass"] = (
-                gdf_impact_agg.loc[
-                    gdf_impact_agg["NAME"] == name, "centerofmass"
-                ].apply(lambda g: translate(g, *shift))
-            )
+            gdf_impact_agg.loc[gdf_impact_agg["name"] == name, "centerofmass"] = (
+                gdf_impact_agg.loc[gdf_impact_agg["name"] == name,
+                                   "centerofmass"].apply(lambda g: translate(g, *shift)))
 
     if exposure_for_normalization is not None:
         agg_exp = aggregate_exposures_by_gdf(exposure_for_normalization, gdf_regions)
-        if (
-            gdf_impact_agg[list(impact_forecast.event_id)].shape[0]
-            != agg_exp["value"].shape[0]
-        ):
-            raise ValueError(
-                f"Number of columns of aggregated impact matrix "
-                f"(shape {gdf_impact_agg[list(impact_forecast.event_id)].shape})"
-                f"does not correspond to number of columns of aggregated exposure "
-                f"({agg_exp['value'].shape[0]})."
-            )
-        gdf_impact_agg[list(impact_forecast.event_id)] = gdf_impact_agg[
-            list(impact_forecast.event_id)
-        ].div(agg_exp["value"], axis=0)
+        if (gdf_impact_agg[list(impact_forecast.event_id)].shape[0] != agg_exp["value"].shape[0]):
+            raise ValueError(f"Number of columns of aggregated impact matrix "
+                             f"(shape {gdf_impact_agg[list(impact_forecast.event_id)].shape})"
+                             f"does not correspond to number of columns of aggregated exposure "
+                             f"({agg_exp['value'].shape[0]}).")
+        gdf_impact_agg[list(impact_forecast.event_id)] = gdf_impact_agg[list(impact_forecast.event_id)].div(
+            agg_exp["value"], axis=0)
 
     max_values = gdf_impact_agg[list(impact_forecast.event_id)].values.max()
     if bins is None:
@@ -423,26 +397,23 @@ def plot_member_piechart_per_region(
 
     cbax = ax.inset_axes([1.05, 0, 0.05, 1])
     norm = mpl.colors.BoundaryNorm(bins, cmap.N, extend="both")
-    cbar = ax.get_figure().colorbar(
-        mpl.cm.ScalarMappable(norm=norm, cmap=cmap), cax=cbax, orientation="vertical"
-    )
+    cbar = ax.get_figure().colorbar(mpl.cm.ScalarMappable(norm=norm, cmap=cmap), cax=cbax, orientation="vertical")
     cbar.set_label(cbar_title)
     ax.set_title(title)
     return ax
 
-def plot_impact_polygons(
-    impact,
-    gdf_regions,
-    agg_func="max",
-    exposure_for_normalization=None,
-    ax=None,
-    title=None,
-    warning_thresholds=None,
-    warning_colors=None,
-    warning_labels=None,
-    kwargs_legend=None,
-    **kwargs
-):
+
+def plot_impact_polygons(impact,
+                         gdf_regions,
+                         agg_func="max",
+                         exposure_for_normalization=None,
+                         ax=None,
+                         title=None,
+                         warning_thresholds=None,
+                         warning_colors=None,
+                         warning_labels=None,
+                         kwargs_legend=None,
+                         **kwargs):
     """
     Plot warning polygons based on impact thresholds.
 
@@ -480,42 +451,29 @@ def plot_impact_polygons(
         The axes object with the plot.
     """
 
-    gdf_impact = aggregate_impacts_by_gdf(
-        impact, gdf_regions, agg_func=agg_func
-    )
+    gdf_impact = aggregate_impacts_by_gdf(impact, gdf_regions, agg_func=agg_func)
 
     if exposure_for_normalization is not None:
         agg_exp = aggregate_exposures_by_gdf(exposure_for_normalization, gdf_regions)
-        if (
-            gdf_impact[list(impact.event_id)].shape[0]
-            != agg_exp["value"].shape[0]
-        ):
-            raise ValueError(
-                f"Number of columns of aggregated impact matrix "
-                f"(shape {gdf_impact[list(impact.event_id)].shape})"
-                f"does not correspond to number of columns of aggregated exposure "
-                f"({agg_exp['value'].shape[0]})."
-            )
-        gdf_impact[list(impact.event_id)] = gdf_impact[
-            list(impact.event_id)
-        ].div(agg_exp["value"], axis=0)
+        if (gdf_impact[list(impact.event_id)].shape[0] != agg_exp["value"].shape[0]):
+            raise ValueError(f"Number of columns of aggregated impact matrix "
+                             f"(shape {gdf_impact[list(impact.event_id)].shape})"
+                             f"does not correspond to number of columns of aggregated exposure "
+                             f"({agg_exp['value'].shape[0]}).")
+        gdf_impact[list(impact.event_id)] = gdf_impact[list(impact.event_id)].div(agg_exp["value"], axis=0)
 
     figsize = kwargs.pop("figsize", (10, 6))
     if ax is None:
         _, ax = plt.subplots(figsize=figsize)
     if warning_colors is None:
         warning_colors = (
-            np.array(
-                [
-                    [204, 255, 102, 255],  # green
-                    [255, 255, 0, 255],  # yellow
-                    [255, 153, 0, 255],  # orange
-                    [255, 0, 0, 255],  # red
-                    [128, 0, 0, 255],  # dark red
-                ]
-            )
-            / 255
-        )
+            np.array([
+                [204, 255, 102, 255],  # green
+                [255, 255, 0, 255],  # yellow
+                [255, 153, 0, 255],  # orange
+                [255, 0, 0, 255],  # red
+                [128, 0, 0, 255],  # dark red
+            ]) / 255)
     if warning_labels is None:
         warning_labels = [
             "1: Minimal or no hazard",
@@ -524,7 +482,7 @@ def plot_impact_polygons(
             "4: Severe hazard",
             "5: Very severe hazard",
         ]
-    
+
     if warning_thresholds is None:
         warning_thresholds = [2., 3., 4., 5.]
 
@@ -534,9 +492,7 @@ def plot_impact_polygons(
     bounds = [-np.inf] + list(warning_thresholds) + [np.inf]
     norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
 
-    gdf_impact.plot(
-        column=1, cmap=cmap, norm=norm, edgecolor="black", linewidth=0.5, ax=ax
-    )
+    gdf_impact.plot(column=1, cmap=cmap, norm=norm, edgecolor="black", linewidth=0.5, ax=ax)
 
     legend_elements = [
         mpl.patches.Patch(facecolor=color, edgecolor="k", label=label)
@@ -554,6 +510,7 @@ def plot_impact_polygons(
         title = "Impact-threshold based warning per warning region"
     ax.set_title(title)
     return ax
+
 
 def plot_impact_with_region_shapes(
     impact,
@@ -601,13 +558,9 @@ def plot_impact_with_region_shapes(
     else:
         current_crs = gdf_regions.crs
     if ax is None:
-        ax = gdf_regions.geometry.plot(
-            facecolor="white", edgecolor="black", figsize=kwargs.get("figsize", (10, 6))
-        )
+        ax = gdf_regions.geometry.plot(facecolor="white", edgecolor="black", figsize=kwargs.get("figsize", (10, 6)))
     else:
-        gdf_regions.geometry.to_crs(current_crs).plot(
-            ax=ax, facecolor="white", edgecolor="black"
-        )
+        gdf_regions.geometry.to_crs(current_crs).plot(ax=ax, facecolor="white", edgecolor="black")
     bbox = (*ax.get_xlim(), *ax.get_ylim())
 
     imp = np.asarray(impact.imp_mat.todense()).ravel()
@@ -655,11 +608,12 @@ def plot_impact_with_region_shapes(
 
     cbax = ax.inset_axes([1.05, 0, 0.05, 1])
     cbar = ax.get_figure().colorbar(
-        mpl.cm.ScalarMappable(norm=norm, cmap=cmap), cax=cbax, orientation="vertical", extend="max",
+        mpl.cm.ScalarMappable(norm=norm, cmap=cmap),
+        cax=cbax,
+        orientation="vertical",
+        extend="max",
     )
-    cbax.yaxis.set_major_formatter(
-        ticker.FuncFormatter(lambda x, _: print_large_amounts(x))
-    )
+    cbax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: print_large_amounts(x)))
     cbar.set_label(cbar_title)
     ax.set_title(title)
     return ax
