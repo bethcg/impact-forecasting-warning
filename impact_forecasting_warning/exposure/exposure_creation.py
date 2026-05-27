@@ -11,7 +11,7 @@ Exposure creation and preparation functions.
 import srtm
 
 from climada.entity import Exposures
-from climada.hazard.forecast import HazardForecast
+from climada.hazard.forecast import HazardForecast  # pylint: disable=import-error  # TODO: Fix climada.hazard.forecast import
 
 
 def prepare_elevation_based_exposure(haz_fc: HazardForecast, elevation_threshold: float = 1600.0) -> Exposures:

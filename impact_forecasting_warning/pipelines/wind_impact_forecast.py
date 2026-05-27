@@ -14,7 +14,7 @@ from pathlib import Path
 
 from climada.engine import ImpactCalc
 from climada.entity import ImpactFuncSet
-from climada.hazard.forecast import HazardForecast
+from climada.hazard.forecast import HazardForecast  # pylint: disable=import-error  # TODO: Fix climada.hazard.forecast import
 
 from impact_forecasting_warning.hazard.weather_api import fetch_ogd_forecast
 from impact_forecasting_warning.hazard.hazard_forecast import create_hazard_forecast

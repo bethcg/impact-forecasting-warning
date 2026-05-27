@@ -11,7 +11,7 @@ Generic hazard forecast creation from weather data.
 from datetime import datetime, timedelta
 import xarray as xr
 
-from climada.hazard.forecast import HazardForecast
+from climada.hazard.forecast import HazardForecast  # pylint: disable=import-error  # TODO: Fix climada.hazard.forecast import
 
 
 def create_hazard_forecast(da_forecast: xr.DataArray,
