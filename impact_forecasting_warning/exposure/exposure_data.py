@@ -8,12 +8,12 @@ SPDX-License-Identifier: BSD-3-Clause
 Exposure data loading: LitPop creation, geodata, and elevation data.
 """
 
+from pathlib import Path
+
 import cartopy.crs as ccrs
 import geopandas as gpd
 import numpy as np
-from pathlib import Path
 
-from climada import CONFIG
 from climada.entity import LitPop
 
 # Define data paths (relative to this module)
