@@ -42,7 +42,7 @@ This project requires CLIMADA's ``forecast-class`` branch (not available on PyPI
 
 **2. Configure Poetry to use the conda environment:**
 
-Create a ``poetry.toml`` file in the project root:
+Create a (or use the provided) ``poetry.toml`` file in the project root:
 
 .. code-block:: toml
 
