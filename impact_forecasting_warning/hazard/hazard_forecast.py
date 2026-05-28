@@ -9,6 +9,7 @@ Generic hazard forecast creation from weather data.
 """
 
 from datetime import datetime, timedelta
+import numpy as np
 import xarray as xr
 
 from climada.hazard.forecast import HazardForecast  # pylint: disable=import-error  # TODO: Fix climada.hazard.forecast import
@@ -42,8 +43,12 @@ def create_hazard_forecast(da_forecast: xr.DataArray,
     reference_time = str(da_forecast.ref_time.values[0])[:-13]
     ref_time_str = reference_time.replace('-', '').replace('T', '').replace(':', '')[:-2]
 
-    # Calculate number of forecast days
-    n_days = int(len(da_forecast.lead_time) / 24)
+    # Calculate number of forecast days from the maximum lead_time
+    max_lead_time = da_forecast.lead_time.max().values
+    # Convert timedelta64[ns] to days
+    n_days = int(max_lead_time.astype('timedelta64[D]') / np.timedelta64(1, 'D'))
+    if n_days == 0:  # Handle edge case where lead_time is less than 1 day
+        n_days = 1
 
     # Calculate valid times
     valid_time_strs = [(datetime.fromisoformat(reference_time) + timedelta(days=i)).strftime("%Y%m%d")
@@ -67,9 +72,27 @@ def create_hazard_forecast(da_forecast: xr.DataArray,
     da_forecast = da_forecast.assign_coords(
         forecast_day=(da_forecast.forecast_day.values.astype("timedelta64[D]").astype("timedelta64[ns]")))
 
+    # Drop singleton dimensions that can interfere with HazardForecast creation
+    if "ref_time" in da_forecast.dims and da_forecast.sizes["ref_time"] == 1:
+        da_forecast = da_forecast.squeeze("ref_time", drop=True)
+    if "z" in da_forecast.dims and da_forecast.sizes["z"] == 1:
+        da_forecast = da_forecast.squeeze("z", drop=True)
+
+    # Ensure all required dimensions are present
+    if "forecast_day" not in da_forecast.dims:
+        da_forecast = da_forecast.expand_dims({"forecast_day": 1})
+    if "eps" not in da_forecast.dims:
+        da_forecast = da_forecast.expand_dims({"eps": 1})
+
+    # Convert to dataset
+    ds = da_forecast.to_dataset(name=variable_name)
+
+    print(f"DEBUG: Dataset structure:")
+    print(ds)
+
     # Create HazardForecast object from DataArray
     haz_fc = HazardForecast.from_xarray_raster(
-        da_forecast.to_dataset(name=variable_name),
+        ds,
         hazard_type=hazard_type,
         intensity_unit=intensity_unit,
         coordinate_vars={
