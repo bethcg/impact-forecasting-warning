@@ -13,7 +13,7 @@ python = ">=3.10,<3.13"
 cartopy = "^0.23.0"
 # climada is installed via conda/mamba (environment.yml) - don't manage with poetry
 earthkit-data = "^0.20.0"
-# gdal is installed via conda/mamba - don't manage with poetry
+gdal = "~3.8.0"  # Match system GDAL version (Ubuntu apt-get provides 3.8.x)
 geopandas = "^1.0.0"
 matplotlib = "^3.9.0"
 meteodata-lab = "^0.7.2"
