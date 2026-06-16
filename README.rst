@@ -29,7 +29,7 @@ Use the provided ``environment.yml`` file:
 .. code-block:: console
 
     # Create conda environment from environment.yml
-    $ conda env create -f environment.yml
+    $ conda env create -n climada_env -f environment.yml
     $ conda activate climada_env
 
 This installs Python 3.11, all base dependencies (numpy, pandas, xarray, matplotlib, cartopy, geopandas), and CLIMADA's forecast-class branch from GitHub.
@@ -43,13 +43,13 @@ This installs Python 3.11, all base dependencies (numpy, pandas, xarray, matplot
     $ conda activate climada_env
 
     # Install base dependencies in conda environment
-    $ pip install numpy pandas xarray matplotlib cartopy geopandas
+    $ pip install numpy pandas xarray matplotlib cartopy geopandas poetry
 
     # Clone and install CLIMADA forecast-class branch
     $ cd ~/git_projects  # or your preferred location
     $ git clone https://github.com/CLIMADA-project/climada_python.git
     $ cd climada_python
-    $ git checkout forecast-class
+    $ git checkout develop
     $ pip install -e .
 
 **2. Configure Poetry to use the conda environment:**

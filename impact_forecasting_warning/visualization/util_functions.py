@@ -576,7 +576,6 @@ def plot_impact_with_region_shapes(
     mask = imp > 0
     vmin = kwargs.get("vmin", imp[mask].min())
     mask &= imp >= vmin
-    print(sum(mask), np.any(mask))
     n = np.count_nonzero(mask)
     if n >= 3:
         ax.hexbin(
