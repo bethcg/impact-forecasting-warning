@@ -1327,13 +1327,13 @@ tqdm = ["tqdm"]
 
 [[package]]
 name = "gdal"
-version = "3.8.5"
+version = "3.8.4"
 description = "GDAL: Geospatial Data Abstraction Library"
 optional = false
 python-versions = ">=3.6.0"
 groups = ["main"]
 files = [
-    {file = "GDAL-3.8.5.tar.gz", hash = "sha256:ad8addd58ba9c62aefc7f65d345c168736798f137e5c8f247af76fcf4862d371"},
+    {file = "GDAL-3.8.4.tar.gz", hash = "sha256:7c51e0ae7a7ccf43ad9e4bf435176baa9276653dfa16fd167c3632f6e7275207"},
 ]
 
 [package.extras]
@@ -4476,4 +4476,4 @@ type = ["pytest-mypy (>=1.0.1) ; platform_python_implementation != \"PyPy\""]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.13"
-content-hash = "3e54f0e651d673450038f39a83245191c7bc78b9f2ab5cccf18c234335deda44"
+content-hash = "a980e49d7b512848d00a6b3f1228bf746db76937eab48a18a8d20c3eb04acc06"
