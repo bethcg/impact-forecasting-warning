@@ -2,7 +2,7 @@ import os
 
 extensions = ["sphinx.ext.napoleon", "autoapi.extension", "sphinx.ext.viewcode"]
 
-project = "Open Source Template"
+project = "Impact Forecasting Warning"
 copyright = "2026, MeteoSwiss"
 author = "PXF"
 
@@ -47,5 +47,8 @@ html_sidebars = {"usage": [], "changelog": [], "migration_guide": [], "readme": 
 napoleon_use_param = False  # improve parameters description
 add_module_names = False  # avoid the display of redundant module names
 
-autoapi_dirs = ["../open_source_template"]
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+autoapi_dirs = [str(ROOT / "impact_forecasting_warning")]
 autoapi_options = ["members", "undoc-members", "show-inheritance", "show-module-summary", "imported-members"]

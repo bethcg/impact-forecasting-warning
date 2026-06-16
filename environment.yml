@@ -1,0 +1,17 @@
+name: climada_env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - poetry
+  - numpy
+  - pandas
+  - xarray
+  - matplotlib
+  - cartopy
+  - geopandas
+  - mamba
+  - pip
+  - gdal==3.8.*
+  - pip:
+    - git+https://github.com/CLIMADA-project/climada_python.git@develop
