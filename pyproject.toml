@@ -11,7 +11,7 @@ packages = [{ include = "impact_forecasting_warning" }]
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
 cartopy = "^0.23.0"
-climada = {git = "https://github.com/CLIMADA-project/climada_python.git", branch = "develop"}
+# climada is installed via conda/mamba (environment.yml) - don't manage with poetry
 earthkit-data = "^0.20.0"
 # gdal is installed via conda/mamba - don't manage with poetry
 geopandas = "^1.0.0"
