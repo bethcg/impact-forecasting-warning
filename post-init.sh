@@ -7,8 +7,9 @@ cd /home/renku/work/impact-forecasting-warning
 CONDA_ENV_BIN="/layers/paketo-buildpacks_conda-env-update/conda-env/bin"
 
 echo "Running poetry install inside a localized virtualenv..."
-# Explicitly override the poetry.toml file using environment variables.
-# This forces poetry to build a local `.venv` inside your project directory.
+# Crucial: We temporarily inject CONDA_ENV_BIN into the PATH inline 
+# so the GDAL installer can successfully locate 'gdal-config'.
+PATH="$CONDA_ENV_BIN:$PATH" \
 POETRY_VIRTUALENVS_CREATE=true \
 POETRY_VIRTUALENVS_IN_PROJECT=true \
 $CONDA_ENV_BIN/poetry install
@@ -18,10 +19,5 @@ echo "Configuring environment variables..."
 VENV_BIN_PATH="/home/renku/work/impact-forecasting-warning/.venv/bin"
 
 # Persist everything for your interactive terminal sessions
-# Crucial: Prepend VENV_BIN_PATH so your code runs using the poetry packages, 
-# but keep CONDA_ENV_BIN right next to it so it falls back to the system's GDAL/PROJ binaries!
-
 echo "export PATH=\"$VENV_BIN_PATH:$CONDA_ENV_BIN:\${PATH}\"" >> ~/.bashrc
 echo "cd /home/renku/work/impact-forecasting-warning" >> ~/.bashrc
-
-echo "Initialization complete! Your workflow is now fully automated."
