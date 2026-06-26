@@ -10,6 +10,8 @@ echo "Running poetry install..."
 poetry install --no-root
 
 echo "Configuring environment variables..."
+echo "export PROJ_LIB=/layers/paketo-buildpacks_conda-env-update/conda-env/share/proj" >> /home/renku/.bashrc
+echo "cd /home/renku/work/impact-forecasting-warning" >> /home/renku/.bashrc
 
 popd > /dev/null
 echo "Initialization complete!"
